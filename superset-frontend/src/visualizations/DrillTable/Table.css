@@ -1,0 +1,36 @@
+.superset-legacy-chart-table {
+    margin: 0px !important;
+    background: transparent;
+    background-color: white;
+}
+
+.superset-legacy-chart-table thead th.sorting:after, table.table thead th.sorting_asc:after, table.table thead th.sorting_desc:after {
+    top: 0px;
+}
+
+.like-pre {
+    white-space: pre-wrap;
+}
+
+.cssx {
+    text-align: center;
+}
+
+.even {
+    background-color: #f9f9f9;
+}
+
+th {
+    background-color: #f9f9f9;
+}
+
+
+table.dataTable.table-condensed .sorting:after {
+    content: url(data:image/svg+xml;%20charset=utf8,%3Csvg%20stroke%3D%22currentColor%22%20fill%3D%22currentColor%22%20stroke-width%3D%220%22%20viewBox%3D%220%200%20320%20512%22%20height%3D%220.75em%22%20width%3D%220.75em%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M41%20288h238c21.4%200%2032.1%2025.9%2017%2041L177%20448c-9.4%209.4-24.6%209.4-33.9%200L24%20329c-15.1-15.1-4.4-41%2017-41zm255-105L177%2064c-9.4-9.4-24.6-9.4-33.9%200L24%20183c-15.1%2015.1-4.4%2041%2017%2041h238c21.4%200%2032.1-25.9%2017-41z%22%3E%3C/path%3E%3C/svg%3E);
+}
+table.dataTable.table-condensed .sorting_asc:after {
+    content: url(data:image/svg+xml;%20charset=utf8,%3Csvg%20stroke%3D%22currentColor%22%20fill%3D%22currentColor%22%20stroke-width%3D%220%22%20viewBox%3D%220%200%20320%20512%22%20height%3D%220.75em%22%20width%3D%220.75em%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M41%20288h238c21.4%200%2032.1%2025.9%2017%2041L177%20448c-9.4%209.4-24.6%209.4-33.9%200L24%20329c-15.1-15.1-4.4-41%2017-41z%22%3E%3C/path%3E%3C/svg%3E);
+}
+table.dataTable.table-condensed .sorting_desc:after {
+    content: url(data:image/svg+xml;%20charset=utf8,%3Csvg%20stroke%3D%22currentColor%22%20fill%3D%22currentColor%22%20stroke-width%3D%220%22%20viewBox%3D%220%200%20320%20512%22%20height%3D%220.75em%22%20width%3D%220.75em%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M279%20224H41c-21.4%200-32.1-25.9-17-41L143%2064c9.4-9.4%2024.6-9.4%2033.9%200l119%20119c15.2%2015.1%204.5%2041-16.9%2041z%22%3E%3C/path%3E%3C/svg%3E);
+}

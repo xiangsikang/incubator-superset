@@ -2957,6 +2957,170 @@ class PartitionViz(NVD3TimeSeriesViz):
         return self.nest_values(levels)
 
 
+class EchartsMap(NVD3Viz):
+    """ echarts map viz """
+    viz_type = 'echarts_map'  # 对应前端名字
+    verbose_name = _('echarts_map')
+    credits = 'a <a href="https://github.com/airbnb/superset">Superset</a> original'
+    is_timeseries = False
+
+    def run_extra_queries(self):
+        qry = super().query_obj()
+        metrics = qry['metrics']
+        groupbys = self.form_data.get("groupby")
+        by = []
+        self.dataframes = {}
+
+        for groupby in groupbys:
+            by.append(groupby)
+            for metric in metrics:
+                qry.update({'metrics': [metric],'groupby':by})
+                df = self.get_df_payload(query_obj=qry).get("df")
+
+                label = metric if isinstance(metric, str) else metric.get('label')
+                self.dataframes[groupby+ '_' +label] = df
+
+    def get_data(self, df):
+        metrics = self.form_data.get("metrics") or []
+        groupbys = self.form_data.get("groupby") or []
+        d = {}
+        max_num = 0
+        index = 0
+        for groupby in groupbys:
+            index = index + 1
+            midlist = []
+            for metric in metrics:
+                label = metric if isinstance(metric, str) else metric.get('label')
+                df = self.dataframes.get(groupby+ '_' +label)
+                list = df.itertuples(index=False)
+
+                if index == 1:
+                    data = [
+                        {'name': row[0], 'value': row[1]} for row in list
+                    ]
+                    mid_max = max([data[i].get('value') for i in range(len(data))])
+                    if mid_max > max_num:
+                        max_num = mid_max
+                else:
+                    data = [
+                        {'name': row[index-1], 'value': row[index],'key':row[index-2]} for row in list
+                    ]
+                midlist.append({'name': label, 'data': data})
+            d.update({groupby: midlist})
+        d.update({'max': max_num})
+        return d
+
+
+class DrillTableViz(BaseViz):
+    """A basic html table that is sortable and searchable"""
+
+    viz_type = "drill_table"
+    verbose_name = _("Drill Table View")
+    credits = 'a <a href="https://github.com/airbnb/superset">Superset</a> original'
+    is_timeseries = False
+    enforce_numerical_metrics = False
+
+    def should_be_timeseries(self):
+        fd = self.form_data
+        # TODO handle datasource-type-specific code in datasource
+        conditions_met = (fd.get("granularity") and fd.get("granularity") != "all") or (
+                fd.get("granularity_sqla") and fd.get("time_grain_sqla")
+        )
+        if fd.get("include_time") and not conditions_met:
+            raise Exception(
+                _("Pick a granularity in the Time section or " "uncheck 'Include Time'")
+            )
+        return fd.get("include_time")
+
+    def query_obj(self):
+
+        d = super().query_obj()
+        fd = self.form_data
+
+
+        if fd.get("all_columns") and (fd.get("groupby") or fd.get("metrics")):
+            raise Exception(
+                _(
+                    "Choose either fields to [Group By] and [Metrics] or "
+                    "[Columns], not both"
+                )
+            )
+
+        sort_by = fd.get("timeseries_limit_metric")
+        if fd.get("all_columns"):
+            d["columns"] = fd.get("all_columns")
+            d["groupby"] = []
+            order_by_cols = fd.get("order_by_cols") or []
+            d["orderby"] = [json.loads(t) for t in order_by_cols]
+        elif sort_by:
+            sort_by_label = utils.get_metric_name(sort_by)
+            if sort_by_label not in utils.get_metric_names(d["metrics"]):
+                d["metrics"] += [sort_by]
+            d["orderby"] = [(sort_by, not fd.get("order_desc", True))]
+
+        for field in ["drill_by_1", "drill_by_2", "drill_by_3"]:
+            for item in fd.get(field) or []:
+                d['groupby'].append(item)
+
+        # Add all percent metrics that are not already in the list
+        if "percent_metrics" in fd:
+            d["metrics"] = d["metrics"] + list(
+                filter(lambda m: m not in d["metrics"], fd["percent_metrics"] or [])
+            )
+
+        d["is_timeseries"] = self.should_be_timeseries()
+
+        return d
+
+    def get_data(self, df):
+
+        fd = self.form_data
+        if not self.should_be_timeseries() and df is not None and DTTM_ALIAS in df:
+            del df[DTTM_ALIAS]
+
+        # Sum up and compute percentages for all percent metrics
+        percent_metrics = fd.get("percent_metrics") or []
+        percent_metrics = [utils.get_metric_name(m) for m in percent_metrics]
+
+        if len(percent_metrics):
+            percent_metrics = list(filter(lambda m: m in df, percent_metrics))
+            metric_sums = {
+                m: reduce(lambda a, b: a + b, df[m]) for m in percent_metrics
+            }
+            metric_percents = {
+                m: list(
+                    map(
+                        lambda a: None if metric_sums[m] == 0 else a / metric_sums[m],
+                        df[m],
+                    )
+                )
+                for m in percent_metrics
+            }
+            for m in percent_metrics:
+                m_name = "%" + m
+                df[m_name] = pd.Series(metric_percents[m], name=m_name)
+            # Remove metrics that are not in the main metrics list
+            metrics = fd.get("metrics") or []
+            metrics = [utils.get_metric_name(m) for m in metrics]
+            for m in filter(
+                    lambda m: m not in metrics and m in df.columns, percent_metrics
+            ):
+                del df[m]
+
+        data = self.handle_js_int_overflow(
+            dict(records=df.to_dict(orient="records"), columns=list(df.columns))
+        )
+
+        return data
+
+
+    def json_dumps(self, obj, sort_keys=False):
+
+        return json.dumps(
+            obj, default=utils.json_iso_dttm_ser, sort_keys=sort_keys, ignore_nan=True
+        )
+
+
 viz_types = {
     o.viz_type: o
     for o in globals().values()

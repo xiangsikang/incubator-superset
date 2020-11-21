@@ -61,6 +61,8 @@ import { DeckGLChartPreset } from '@superset-ui/legacy-preset-chart-deckgl';
 
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable/TimeTableChartPlugin';
+import EchartsMapChartPlugin from '../EchartsMap/EchartsMapChartPlugin';
+import DrillTableChartPlugin from '../DrillTable/DrillTableChartPlugin';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -107,6 +109,8 @@ export default class MainPreset extends Preset {
         new TreemapChartPlugin().configure({ key: 'treemap' }),
         new WordCloudChartPlugin().configure({ key: 'word_cloud' }),
         new WorldMapChartPlugin().configure({ key: 'world_map' }),
+        new EchartsMapChartPlugin().configure({ key: 'echarts_map' }),
+        new DrillTableChartPlugin().configure({ key: 'drill_table' }),
       ],
     });
   }

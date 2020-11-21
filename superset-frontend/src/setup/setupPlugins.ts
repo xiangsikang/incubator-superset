@@ -32,6 +32,8 @@ import DeckScreengrid from '../explore/controlPanels/DeckScreengrid';
 import FilterBox from '../explore/controlPanels/FilterBox';
 import Separator from '../explore/controlPanels/Separator';
 import TimeTable from '../explore/controlPanels/TimeTable';
+import EchartsMap from '../explore/controlPanels/EchartsMap';
+import DrillTable from '../explore/controlPanels/DrillTable';
 
 export default function setupPlugins() {
   new MainPreset().register();
@@ -49,7 +51,10 @@ export default function setupPlugins() {
     .registerValue('deck_path', DeckPath)
     .registerValue('deck_polygon', DeckPolygon)
     .registerValue('deck_scatter', DeckScatter)
-    .registerValue('deck_screengrid', DeckScreengrid);
+    .registerValue('deck_screengrid', DeckScreengrid)
+    .registerValue('echarts_map', EchartsMap)
+    .registerValue('drill_table', DrillTable)
+  ;
 
   setupPluginsExtra();
 }
