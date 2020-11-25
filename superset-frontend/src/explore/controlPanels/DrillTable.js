@@ -82,7 +82,8 @@ export default {
                 [mycontrols.page_length],
                 [mycontrols.include_search],
                 [mycontrols.align_pn, mycontrols.color_pn],
-                [mycontrols.use_paging, mycontrols.show_cell_bars]
+                [mycontrols.use_paging, mycontrols.show_cell_bars],
+                [mycontrols.order_desc],
             ],
         },
     ],

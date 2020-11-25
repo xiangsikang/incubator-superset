@@ -54,6 +54,7 @@ function DrillTableVis(element, props) {
         height,
         alignPositiveNegative = false,
         colorPositiveNegative = false,
+        columnLabels,
         columns,
         filters = {},
         includeSearch = false,
@@ -90,7 +91,7 @@ function DrillTableVis(element, props) {
         // Add percent metrics
         .concat((percentMetrics || []).map(m => `%${m}`))
         // Removing metrics (aggregates) that are strings
-        .filter(m => typeof data[0][m] === 'number');
+        .filter(m => data && data.length > 0 && typeof data[0][m] === 'number');
 
 
     function col(c) {
@@ -156,13 +157,13 @@ function DrillTableVis(element, props) {
         newColumns = [];
         requestData.groupby = [];
 
-        //
         for (let i = 0; i < drillBy.length; i++) {
             let index = drillByIndex.length > i ? drillByIndex[i] : -1;
             let items = drillBy[i];
             if (items && items.length > 0) {
-                let label = index > 0 && index <= items.length ? items[index - 1] : items[0];
-                newColumns.push({key: items.join('-'), label: label, format: undefined})
+                let key = index > 0 && index <= items.length ? items[index - 1] : items[0];
+
+                newColumns.push({key, label: columnLabels[key], format: undefined})
             }
 
             // groupby
@@ -178,8 +179,13 @@ function DrillTableVis(element, props) {
             })
         });
 
-        requestData.adhoc_filters = formData.adhocFilters;
-        requestData.row_limit = requestData.rowLimit;
+        let humpFields =['adhocFilters', 'vizType', 'timeRangeEndpoints', 'urlParams', 'timeRangeEndpoints', 'granularitySqla', 'timeRange', 'rowLimit'];
+        for (let field of humpFields) {
+            requestData[field.replace(/([A-Z])/g,"_$1").toLowerCase()] =  requestData[field];
+            if (requestData[field] !== undefined) {
+                delete requestData[field]
+            }
+        }
         // if (whereList.length > 0) {
         //     requestData.filters = [];
         //     whereList.map(item => {

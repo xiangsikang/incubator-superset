@@ -1338,6 +1338,14 @@ const controls = {
     default: false,
   },
 
+  order_desc: {
+    type: 'CheckboxControl',
+    label: t('order desc'),
+    renderTrigger: true,
+    default: false,
+    description: t('Order Desc'),
+  },
+
   use_paging: {
     type: 'CheckboxControl',
     label: t('Use paging'),

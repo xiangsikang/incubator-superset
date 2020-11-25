@@ -49,12 +49,18 @@ export default function transformProps(chartProps) {
         };
     });
 
+    let columnLabels = {};
+    for (let col of datasource.columns) {
+        columnLabels[col.column_name] = col.verbose_name || col.column_name;
+    }
+
     return {
         height,
         data: records,
         alignPositiveNegative: alignPn,
         colorPositiveNegative: colorPn,
         columns: processedColumns,
+        columnLabels,
         filters,
         includeSearch,
         metrics,
