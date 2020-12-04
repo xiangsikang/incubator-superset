@@ -2998,9 +2998,10 @@ class EchartsMap(NVD3Viz):
                     data = [
                         {'name': row[0], 'value': row[1]} for row in list
                     ]
-                    mid_max = max([data[i].get('value') for i in range(len(data))])
-                    if mid_max > max_num:
-                        max_num = mid_max
+                    if len(data) > 0:
+                        mid_max = max([data[i].get('value') for i in range(len(data))])
+                        if mid_max > max_num:
+                            max_num = mid_max
                 else:
                     data = [
                         {'name': row[index-1], 'value': row[index],'key':row[index-2]} for row in list

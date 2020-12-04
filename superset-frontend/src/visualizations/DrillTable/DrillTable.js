@@ -186,21 +186,22 @@ function DrillTableVis(element, props) {
                 delete requestData[field]
             }
         }
-        // if (whereList.length > 0) {
-        //     requestData.filters = [];
-        //     whereList.map(item => {
-        //         let filters_tmp = {"col": item['name'], "op": "==", "val": item['value']};
-        //         requestData.filters.push(filters_tmp);
-        //
-        //     });
-        // } else {
-        //     requestData.filters = [];
-        // }
+        if (whereList.length > 0) {
+            requestData.filters = [];
+            whereList.map(item => {
+                let filters_tmp = {"col": item['name'], "op": "==", "val": item['value']};
+                requestData.filters.push(filters_tmp);
+
+            });
+        } else {
+            requestData.filters = [];
+        }
 
         if (check) {
             let isCache = false;
+            let form_data = JSON.stringify(requestData);
             if (new Date().getTime() - lastRequestTime < 60000) {
-                resultData = cacheData.get(drillByIndex.join('_'));
+                resultData = cacheData.get(form_data);
                 if (resultData !== undefined) {
                     isCache = true;
                 }
@@ -215,9 +216,12 @@ function DrillTableVis(element, props) {
                         XMLHttpRequest.setRequestHeader("X-CSRFToken", token);
                     },
                     async: false,
-                    data: "form_data=" + JSON.stringify(requestData),
+                    data: {"form_data": JSON.stringify(requestData)},
                     success: function (result) {
                         resultData = result['data']['records'];
+
+                        lastRequestTime = new Date().getTime();
+                        cacheData.set(form_data, resultData)
                     }
                 });
             }
@@ -332,7 +336,7 @@ function DrillTableVis(element, props) {
             .on('click', function (d, col, index) {
                 let isDown = true;
 
-                if (!d.isMetric) {
+                if (!d.isMetric && d.val) {
 
                     cacheData.set(drillByIndex.join('_'), resultData);
 

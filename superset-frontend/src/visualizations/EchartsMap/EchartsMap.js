@@ -18,16 +18,17 @@ function EchartsMap(element, props) {
         width,
         height,
         data,
-        formData
+        formData,
+        sliceId
     } = props; // transformProps.js 返回的数据
 
 
     const div = d3.select(element);
-    const sliceId = 'echarts_map_' + 10;
-    const html = '<div id="' + sliceId + '" style="height:' + height + 'px; width:' + width + 'px;border:1px"></div>';
+    const mySliceId = 'echarts_map_' + sliceId;
+    const html = '<div id="' + mySliceId + '" style="height:' + height + 'px; width:' + width + 'px;border:1px"></div>';
     div.html(html);
 
-    let myChart = echarts.init(document.getElementById(sliceId), 'light');
+    let myChart = echarts.init(document.getElementById(mySliceId), 'light');
     document.oncontextmenu = function () {
         return false;
     }; // 取消浏览器的邮件点击事件
@@ -75,7 +76,7 @@ function EchartsMap(element, props) {
         },
         visualMap: {
             min: 0,
-            max: 200,
+            max: data.max,
             text: ['High', 'Low'],
             realtime: false,
             calculable: true,
