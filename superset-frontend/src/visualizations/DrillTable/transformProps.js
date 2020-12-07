@@ -28,7 +28,7 @@ export default function transformProps(chartProps) {
 
     const {columnFormats, verboseMap} = datasource;
 
-    const {records, columns} = queryData.data;
+    const {records, columns, columnNames} = queryData.data;
 
     const processedColumns = columns.map(key => {
         let label = verboseMap[key];
@@ -50,7 +50,7 @@ export default function transformProps(chartProps) {
     });
 
     let columnLabels = {};
-    for (let col of datasource.columns) {
+    for (let col of columnNames) {
         columnLabels[col.column_name] = col.verbose_name || col.column_name;
     }
 

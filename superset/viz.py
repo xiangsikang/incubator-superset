@@ -3111,6 +3111,10 @@ class DrillTableViz(BaseViz):
         data = self.handle_js_int_overflow(
             dict(records=df.to_dict(orient="records"), columns=list(df.columns))
         )
+        data['columnNames'] = [
+            {'column_name':c.column_name, 'verbose_name': c.verbose_name}
+            for c in self.datasource.columns
+        ]
 
         return data
 
