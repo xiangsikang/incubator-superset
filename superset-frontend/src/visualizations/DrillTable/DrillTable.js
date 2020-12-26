@@ -179,7 +179,7 @@ function DrillTableVis(element, props) {
             })
         });
 
-        let humpFields =['adhocFilters', 'vizType', 'timeRangeEndpoints', 'urlParams', 'timeRangeEndpoints', 'granularitySqla', 'timeRange', 'rowLimit'];
+        let humpFields =['adhocFilters', 'extraFilters','vizType', 'timeRangeEndpoints', 'urlParams', 'granularitySqla', 'timeRange', 'rowLimit'];
         for (let field of humpFields) {
             requestData[field.replace(/([A-Z])/g,"_$1").toLowerCase()] =  requestData[field];
             if (requestData[field] !== undefined) {
