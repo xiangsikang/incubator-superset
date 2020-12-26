@@ -1,4 +1,5 @@
 import { t } from '@superset-ui/translation';
+import mycontrols from "../mycontrols";
 
 export default {
     controlPanelSections: [
@@ -22,11 +23,17 @@ export default {
             ],
         },
         {
-            label: t('Options'),
+            label: t('Query'),
+            expanded: true,
             controlSetRows: [
-                ['table_timestamp_format'],
-                ['row_limit', 'page_length'],
-                ['include_search', 'table_filter'],
+                ['adhoc_filters'],
+            ],
+        },
+        {
+            label: t('Options'),
+            expanded: true,
+            controlSetRows: [
+                ['color_scheme']
             ],
         }
     ],

@@ -1,5 +1,7 @@
 import echarts from 'echarts';
 import d3 from 'd3';
+import { getCategoricalSchemeRegistry,
+    getSequentialSchemeRegistry, } from '@superset-ui/color';
 import PropTypes from 'prop-types';
 import china from 'echarts/map/js/china'
 import pp from './province'
@@ -11,9 +13,18 @@ const propTypes = {
     height: PropTypes.number,
 };
 
+function getColors(name) {
+    if (name) {
+        let cs = getCategoricalSchemeRegistry().get(name) || getSequentialSchemeRegistry().get(name);
+        if (cs && cs.colors && cs.colors.length) {
+            return [...cs.colors].splice(0, 3);
+        }
+    }
+
+    return ['lightskyblue', 'yellow', 'orangered'];
+}
+
 function EchartsMap(element, props) {
-
-
     const {
         width,
         height,
@@ -21,6 +32,8 @@ function EchartsMap(element, props) {
         formData,
         sliceId
     } = props; // transformProps.js 返回的数据
+
+    let {colorScheme} = formData;
 
 
     const div = d3.select(element);
@@ -81,7 +94,7 @@ function EchartsMap(element, props) {
             realtime: false,
             calculable: true,
             inRange: {
-                color: ['lightskyblue', 'yellow', 'orangered']
+                color: getColors(colorScheme)
             }
         },
         series: getSeries('china')
