@@ -212,7 +212,7 @@ FAB_API_SWAGGER_UI = True
 # [TimeZone List]
 # See: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 # other tz can be overridden by providing a local_config
-DRUID_TZ = tz.tzutc()
+DRUID_TZ = tz.gettz('Asia/Shanghai')
 DRUID_ANALYSIS_TYPES = ["cardinality"]
 
 # Legacy Druid NoSQL (native) connector
